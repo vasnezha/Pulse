@@ -132,7 +132,7 @@ $(document).ready(function(){
     new WOW().init();
 
 
-    // Calculator
+    //Калькулятор
 
     const result = document.querySelector('.calculating__result span');
     let sex = 'female',
@@ -141,7 +141,7 @@ $(document).ready(function(){
 
     function calcTotal() {
         if (!sex || !height || !weight || !age || !ratio) {
-            result.textContent = '____'; // Можете придумать что угодно
+            result.textContent = '____'; 
             return;
         }
         if (sex === 'female') {
@@ -182,6 +182,13 @@ $(document).ready(function(){
         const input = document.querySelector(selector);
 
         input.addEventListener('input', () => {
+
+            if (input.value.match(/\D/g)) {
+                input.style.border = '1px solid red';
+            } else {
+                input.style.border = 'none';
+            }
+
             switch(input.getAttribute('id')) {
                 case "height":
                     height = +input.value;
