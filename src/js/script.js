@@ -1,17 +1,13 @@
-//slider, делаем при помощи библиотеки JQ
+//Слайдер, делаем при помощи библиотеки JQ
 $(document).ready(function(){
-    //получаем класс, slick-метод позволяющий запустить slick-слайдер
     $('.carousel__inner').slick({
-        //скорость перехода
         speed: 1200,
-        //adaptiveHeight: true,
 
         prevArrow: '<button type="button" class="slick-prev"><img src="icons/left.png"></button>',
         nextArrow: '<button type="button" class="slick-next"><img src="icons/right.png"></button>',
-        //создаем массив данных
+
         responsive: [
             {
-                //на каком промежутке будем устанавливать правила от 0px до 992px
                 breakpoint: 992,
                 settings: {
                     dots: true,
@@ -21,29 +17,21 @@ $(document).ready(function(){
         ]
     });
 
-    //tabs - просматривать разделы табов
-    //получаем табы, будем кликать на один из элементов, первому табу по умолчанию назначаем класс активности
+    //tabs - три раздела
     $('ul.catalog__tabs').on('click', 'li:not(.catalog__tab_active)', function() {
-        //this ссылается на элемент, на который нажали
         $(this)
-        //добавляем активность тому классу на который нажали, все соседние табы, которые не включают тот таб, на который нажали - удаляем у них класс активности 
           .addClass('catalog__tab_active').siblings().removeClass('catalog__tab_active')
-          //подставляем контейнер и ищем блок с классом catalog__content, далее у тех элементов которые нашли удаляем класс активности, eq($(this).index())-благодаря этому получаем номер таба на который нажали, следовательно добавляем ему класс активности этому элементу
           .closest('div.container').find('div.catalog__content').removeClass('catalog__content_active').eq($(this).index()).addClass('catalog__content_active');
       });
 
         //tabs - нажатие на кнопку ПРОЧЕЕ
-        //берем класс кнопки ПОДРОБНЕЕ, each- действие для каждого элемента 
       $('.catalog-item__link').each(function(i) {
-          //на каждую ссылку будем кликать
+
           $(this).on('click', function(e){
-              //то что будет происходить после клика (отменяем стандартное поведение браузера-при клике на ссылку происходит обновление страницы, не переходить по оперделенному адресу а выполнять другие действия)
               e.preventDefault();
-               //логическое выражение: при клике на кнопку переключается класс(если класса нет то он добавляется, если есть убираться)
               $('.catalog-item__content').eq(i).toggleClass('catalog-item__content_active');
-              //eq($(this).index())-благодаря этому получаем номер на который нажали, его лист становится активным
               $('.catalog-item__list').eq(i).toggleClass('catalog-item__list_active');
-          })
+          });
       });
 
       //tabs - нажатие на кнопку НАЗАД
@@ -52,43 +40,31 @@ $(document).ready(function(){
             e.preventDefault();
             $('.catalog-item__content').eq(i).toggleClass('catalog-item__content_active');
             $('.catalog-item__list').eq(i).toggleClass('catalog-item__list_active');
-        })
+        });
     });
 
 
-    //Modal - для кнопок заказать консвльтацию и заказать звонок
-    //получаем элементы по атрибуту-[], пользователь кликает
+    //Modal - для кнопок заказать консультацию и заказать звонок
     $('[data-modal="consultation"]').on('click', function(){
-        //в этой функции говорим, что будет происходить, когда пользователь кликнет (открытие модального окна-нажимаем на кнопку консультации), получаем overlay-затемнение и модальное окно, медленное всплывание окна
         $('.overlay, #consultation').fadeIn('slow');
 
     });
 
-    //скрипт для крестика
-    //обращаемся к классу modal__close, пользователь кликает 
+    //Скрипт для крестика
     $('.modal__close').on('click', function() {
-        //после клика - будут закрываться все элементы (затемнение, и три модальных окна), закрывается тоже медленно
         $('.overlay, #consultation, #thanks, #order').fadeOut('slow');
     });
 
     //Modal- для кнопки купить
-    //следим за кнопками с классом button_mini, при клике на эти кнопки выполняем следующую функцию
     $('.button_mini').each(function(i) {
-        //кнопка, на которую будет совершен клик
         $(this).on('click', function() {
-            //(ОТДАЕМ ТЕКСТ, КОТОРЫЙ ПОЛУЧИЛИ)
-            //внутри модального окна есть класс modal__descr(описание моего модального окна), во внутрь хотим поместить текст(в JQ данная команда может, как получать текст, так и отдавать) - тут мы отдаем текст 
-            //catalog-item__subtitle-все названия товаров
-            // получаем нужный заголовок(название) по индексу, eq-команда позволяет получить элемент по порядку
-            //из заголовка вытаскиваем текст
             $('#order .modal__descr').text($('.catalog-item__subtitle').eq(i).text());
-            //плавно откываем модальное окно
             $('.overlay, #order').fadeIn('slow');
-        })
+        });
     });
 
-    //валидация 
 
+    //Валидация 
     function valideForms(form) {
         $(form).validate({
             //rulse - позволяет настраивать каждое отдельное поле под определенное правило
@@ -110,38 +86,27 @@ $(document).ready(function(){
               }
     
         });
-    };
+    }
 
     valideForms('#consultation-form');
     valideForms('#consultation form');
     valideForms('#order form');
 
+
     $('input[name=phone]').mask("+7 (999) 999-99-99");
 
-    //локальный сервер
-    //все три формы одинаковые, пишем один скрипт для всех форм, который будет отправлять данные 
-    //берем все формы которые есть на сайте, событие сабмит - когда импуты выполнены, прошли все валидации эта форма отправляется
+    //Локальный сервер, модальное окно благодарности
+
     $('form').submit(function(e) {
-        //прописываем функцию с доп элементом e-event - позволяет отменить стандартное поведение браузера, для технологии adjex (не будет перезагрузки страницы)
         e.preventDefault();
-        //отправляем данные на сервер
         $.ajax({
-            //настройка объекта 
-            //type-указываем данные хотим получить или отдать
-            //(в данном случае отдавать)
             type: "POST",
-            //куда будем отправлять
             url: "mailer/smart.php",
-            //данные которые хотим отправить
             data: $(this).serialize()
         }).done(function() {
-            //обрабатываем ответ от сервера, 
-            //Когда выполнили данную операцию, очищаем инпуты, и показываем окно Спасибо
             $(this).find("input").val("");
             $('#consultation, #order').fadeOut();
             $('.overlay, #thanks').fadeIn('slow');
-
-            //в конце очищаем формы
             $('form').trigger('reset');
         });
         return false;
@@ -149,27 +114,92 @@ $(document).ready(function(){
     
 
     // Элемент «вверх»
-    //Говорим, что будет использоваться все окно браузера, JS будет следить за событием скролл, и во время скролла будет происходить функция
     $(window).scroll(function() {
-        //Если наша страница (scrollTop-отступ сверху), если условие выполняется
         if ($(this).scrollTop() > 1600) {
-            //то берем элемент pageup-это ссылка картинки-вверх (ссылка будет появляться или пропадать)
             $('.pageup').fadeIn();
         } else {
             $('.pageup').fadeOut();
         }
     });
 
-    //Плавная прокрутка страницы, при нажатии на кнопку вверх
-    //Получаем все ссылки по определенным параметрам, атрибут href-ведет на ссылку (начинается с #, мы задаем атрибуты которые начинаются с #)
-    //пользователь кликает на стрелку вверх
-    $("a[href=#up]").click(function(){
-        //создаем переменную, берем ту ссылку на которую нажали, прописываем атрибут и берем атрибут который идет в href
+    //Плавная прокрутка страницы, при нажатии на элемент «вверх»  
+    $("a[href=#up]").click(function() {
         const _href = $(this).attr("href");
-        //далее идет анимация, написанная при помощи JQ, анимируем html и body и пролистываем сраницу в начало
         $("html, body").animate({scrollTop: $(_href).offset().top+"px"});
         return false;
     });
 
     new WOW().init();
+
+
+    // Calculator
+
+    const result = document.querySelector('.calculating__result span');
+    let sex = 'female',
+        height, weight, age,
+        ratio = 1.375;
+
+    function calcTotal() {
+        if (!sex || !height || !weight || !age || !ratio) {
+            result.textContent = '____'; // Можете придумать что угодно
+            return;
+        }
+        if (sex === 'female') {
+            result.textContent = Math.round((447.6 + (9.2 * weight) + (3.1 * height) - (4.3 * age)) * ratio);
+        } else {
+            result.textContent = Math.round((88.36 + (13.4 * weight) + (4.8 * height) - (5.7 * age)) * ratio);
+        }
+    }
+
+    calcTotal();
+
+    function getStaticInformation(parentSelector, activeClass) {
+        const elements = document.querySelectorAll(`${parentSelector} div`);
+
+        elements.forEach(elem => {
+            elem.addEventListener('click', (e) => {
+                if (e.target.getAttribute('data-ratio')) {
+                    ratio = +e.target.getAttribute('data-ratio');
+                } else {
+                    sex = e.target.getAttribute('id');
+                }
+    
+                elements.forEach(elem => {
+                    elem.classList.remove(activeClass);
+                });
+    
+                e.target.classList.add(activeClass);
+    
+                calcTotal();
+            });
+        });
+    }
+
+    getStaticInformation('#gender', 'calculating__choose-item_active');
+    getStaticInformation('.calculating__choose_big', 'calculating__choose-item_active');
+
+    function getDynamicInformation(selector) {
+        const input = document.querySelector(selector);
+
+        input.addEventListener('input', () => {
+            switch(input.getAttribute('id')) {
+                case "height":
+                    height = +input.value;
+                    break;
+                case "weight":
+                    weight = +input.value;
+                    break;
+                case "age":
+                    age = +input.value;
+                    break;
+            }
+
+            calcTotal();
+        });
+    }
+
+    getDynamicInformation('#height');
+    getDynamicInformation('#weight');
+    getDynamicInformation('#age');
+
 });
